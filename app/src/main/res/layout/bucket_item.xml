@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="120dp"
                 android:id="@+id/bucket_item"
         >
 
@@ -27,7 +27,8 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             >
 
         <TextView
@@ -42,7 +43,7 @@
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 >
 
             <TextView
@@ -59,10 +60,32 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="Description"
+                    android:paddingRight="16dp"
                     android:id="@+id/tv_bucket_description"
                     />
+
         </LinearLayout>
 
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                android:text="Created"
+                android:textSize="10sp"
+                android:paddingRight="16dp"
+                android:id="@+id/tv_bucket_created"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:text="Modified"
+                android:id="@+id/tv_bucket_modified"
+                />
     </LinearLayout>
 
 </RelativeLayout>

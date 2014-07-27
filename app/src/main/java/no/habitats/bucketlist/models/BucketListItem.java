@@ -4,18 +4,18 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import no.habitats.bucketlist.C;
 
 /**
  * Created by Patrick on 27.07.2014.
  */
 public class BucketListItem implements Comparable<BucketListItem> {
-
-  private static final String DESCRIPTION = "description";
-  private static final String TITLE = "title";
-  private static final String NAME = "BucketList";
 
   private String id;
   private DateTime created;
@@ -36,8 +36,8 @@ public class BucketListItem implements Comparable<BucketListItem> {
     this.created = created;
   }
 
-  public ParseUser getOwner() {
-    return owner;
+  public String getOwner() {
+    return "Author: " + owner.getObjectId();
   }
 
   public String getTitle() {
@@ -54,10 +54,9 @@ public class BucketListItem implements Comparable<BucketListItem> {
     return new BucketListItem(title, description);
   }
 
-  private static ParseUser randomUser() {
-    ParseUser user = new ParseUser();
-    user.setUsername("bob");
-    return user;
+  public BucketListItem setOwner(ParseUser owner) {
+    this.owner = owner;
+    return this;
   }
 
   private BucketListItem setModified(DateTime dateTime) {
@@ -65,16 +64,12 @@ public class BucketListItem implements Comparable<BucketListItem> {
     return this;
   }
 
-  private BucketListItem setCreated(DateTime dateTime) {
-    this.created = dateTime;
-    return this;
-  }
-
   public ParseObject toParseObject() {
-    ParseObject parse = new ParseObject(NAME);
-    parse.put(DESCRIPTION, description);
-    parse.put(TITLE, title);
+    ParseObject parse = new ParseObject(C.NAME);
+    parse.put(C.DESCRIPTION, description);
+    parse.put(C.TITLE, title);
     parse.setObjectId(id);
+    parse.put(C.OWNER, ParseUser.getCurrentUser());
 
     return parse;
   }
@@ -83,6 +78,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
     this.description = description;
     return this;
   }
+
 
   public static List<BucketListItem> fromParseObjects(List<ParseObject> parseObjects) {
     List<BucketListItem> bucketListItems = new ArrayList<BucketListItem>();
@@ -93,19 +89,36 @@ public class BucketListItem implements Comparable<BucketListItem> {
   }
 
   public static BucketListItem fromParseObject(ParseObject parseObject) {
-    String title = parseObject.getString(TITLE);
-    String description = parseObject.getString(DESCRIPTION);
+    String title = parseObject.getString(C.TITLE);
+    String description = parseObject.getString(C.DESCRIPTION);
     String id = parseObject.getObjectId();
     DateTime created = new DateTime(parseObject.getCreatedAt());
-    return new BucketListItem(id, title, description, created);
+    DateTime modified = new DateTime(parseObject.get(C.MODIFIED));
+    ParseUser owner = (ParseUser) parseObject.get(C.OWNER);
+    return new BucketListItem(id, title, description, created).setModified(modified).setOwner(owner);
   }
+
 
   @Override
   public int compareTo(BucketListItem another) {
     return (int) ((another.getCreated().getMillis() / 1000) - (getCreated().getMillis() / 1000));
   }
 
+  public String getPrettyCreated() {
+    return "Created: " + prettifyDate(created);
+  }
+
+  public String getPrettyModified() {
+    return "Updated: " + prettifyDate(modified);
+  }
+
+  private String prettifyDate(DateTime date) {
+    DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    return format.print(date);
+  }
+
   private DateTime getCreated() {
     return created;
   }
+
 }

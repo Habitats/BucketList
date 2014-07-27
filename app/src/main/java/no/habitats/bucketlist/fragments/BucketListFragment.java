@@ -55,7 +55,6 @@ public class BucketListFragment extends Fragment {
     });
 
     fetchNew();
-
     return rootView;
   }
 

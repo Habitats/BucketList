@@ -2,7 +2,6 @@ package no.habitats.bucketlist.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,12 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.Collections;
 import java.util.List;
 
+import no.habitats.bucketlist.C;
 import no.habitats.bucketlist.R;
 import no.habitats.bucketlist.models.BucketListItem;
 
@@ -41,10 +42,6 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
 
   private View createViewFromResource(int position, View convertView, ViewGroup parent, int resource) {
     View view;
-    TextView author;
-    TextView title;
-    TextView description;
-    ImageView coverPhoto;
 
     if (convertView == null) {
       view = mInflater.inflate(resource, parent, false);
@@ -52,37 +49,37 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
       view = convertView;
     }
 
-    try {
-      author = (TextView) view.findViewById(R.id.tv_bucket_author);
-      title = (TextView) view.findViewById(R.id.tv_bucket_title);
-      coverPhoto = (ImageView) view.findViewById(R.id.iv_bucket_background);
-      description = (TextView) view.findViewById(R.id.tv_bucket_description);
-    } catch (ClassCastException e) {
-      Log.e(TAG, "You must supply a resource ID for a TextView");
-      throw new IllegalStateException("ArrayAdapter requires the resource ID to be a TextView", e);
-    }
-    BucketListItem bucket = getItem(position);
-//    author.setText("Owner: " + bucket.getOwner().getUsername());
-    title.setText(bucket.getTitle());
+    TextView author = (TextView) view.findViewById(R.id.tv_bucket_author);
+    TextView title = (TextView) view.findViewById(R.id.tv_bucket_title);
+    ImageView coverPhoto = (ImageView) view.findViewById(R.id.iv_bucket_background);
+    TextView description = (TextView) view.findViewById(R.id.tv_bucket_description);
+    TextView modified = (TextView) view.findViewById(R.id.tv_bucket_modified);
+    TextView created = (TextView) view.findViewById(R.id.tv_bucket_created);
 
-    description.setText("Description: " + bucket.getDescription());
+    BucketListItem bucket = getItem(position);
+    author.setText(bucket.getOwner());
+    title.setText(bucket.getTitle());
+    modified.setText(bucket.getPrettyModified());
+    created.setText(bucket.getPrettyCreated());
+    description.setText(bucket.getDescription());
 
     return view;
   }
 
   public void fetchNew() {
-    clear();
-    ParseQuery<ParseObject> query = new ParseQuery("BucketList");
+    ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
+    query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
     query.findInBackground(new FindCallback<ParseObject>() {
       @Override
       public void done(List<ParseObject> parseObjects, ParseException e) {
         if (e == null) {
           List<BucketListItem> list = BucketListItem.fromParseObjects(parseObjects);
           Collections.sort(list);
+          clear();
           addAll(list);
+          notifyDataSetChanged();
         }
       }
     });
-    notifyDataSetChanged();
   }
 }

@@ -16,19 +16,22 @@ import no.habitats.bucketlist.C;
 import no.habitats.bucketlist.R;
 import no.habitats.bucketlist.fragments.BucketListFragment;
 import no.habitats.bucketlist.fragments.LoginFragment;
+import no.habitats.bucketlist.fragments.NewBucketListItemFragment;
 import no.habitats.bucketlist.fragments.SignUpFragment;
 import no.habitats.bucketlist.listeners.BuckerListFragmentListener;
 import no.habitats.bucketlist.listeners.LoginFragmentListener;
+import no.habitats.bucketlist.listeners.NewBucketListItemListener;
 import no.habitats.bucketlist.listeners.SignUpFragmentListener;
 import no.habitats.bucketlist.models.BucketListItem;
 
 
 public class MainActivity extends Activity
-    implements LoginFragmentListener, BuckerListFragmentListener, SignUpFragmentListener {
+    implements LoginFragmentListener, BuckerListFragmentListener, SignUpFragmentListener, NewBucketListItemListener {
 
   private BucketListFragment bucketListFragment;
   private LoginFragment loginFragment;
   private SignUpFragment signupFragment;
+  private NewBucketListItemFragment newBucketItemFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +98,13 @@ public class MainActivity extends Activity
 
   @Override
   public void addToBucketList() {
-    BucketListItem bucketListItem = BucketListItem.random();
+    newBucketItemFragment = NewBucketListItemFragment.newInstance();
+    getFragmentManager().beginTransaction().add(R.id.container, newBucketItemFragment).commit();
+  }
+
+  @Override
+  public void createNewBucketListItem(String title, String description) {
+    BucketListItem bucketListItem = new BucketListItem(title, description);
     ParseObject item = bucketListItem.toParseObject();
 
     item.saveInBackground(new SaveCallback() {
@@ -103,12 +112,13 @@ public class MainActivity extends Activity
       public void done(ParseException e) {
         if (e == null) {
           Toast.makeText(MainActivity.this, "Added to bucketlist", Toast.LENGTH_LONG).show();
+          getFragmentManager().beginTransaction().remove(newBucketItemFragment).commit();
           bucketListFragment.fetchNew();
         } else {
           Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
       }
     });
+
   }
 }

@@ -23,4 +23,5 @@
     <color name="black_alpha_sublte">#80000000</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
+    <color name="white_alpha">#CCFFFFFF</color>
 </resources>
