@@ -2,7 +2,6 @@ package no.habitats.bucketlist.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ public class BucketListFragment extends Fragment {
 
   private BuckerListFragmentListener mListener;
   private BucketListAdapter bucketListAdapter;
+  private ListView bucketList;
 
   public static BucketListFragment newInstance() {
     BucketListFragment fragment = new BucketListFragment();
@@ -51,7 +51,7 @@ public class BucketListFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_bucket_list, container, false);
 
     bucketListAdapter = new BucketListAdapter(getActivity());
-    ListView bucketList = (ListView) rootView.findViewById(R.id.bucket_list);
+    bucketList = (ListView) rootView.findViewById(R.id.bucket_list);
     bucketList.setAdapter(bucketListAdapter);
     bucketList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
@@ -76,9 +76,10 @@ public class BucketListFragment extends Fragment {
     completeBucket(item,view);
   }
 
-  private void completeBucket(BucketListItem item, View view) {
-    view.setBackgroundColor(Color.LTGRAY);
+  private void completeBucket(final BucketListItem item, View view) {
     item.toggleComplete();
+    bucketListAdapter.setCoverColor();
+    bucketListAdapter.notifyDataSetChanged();
     ParseObject parseObject = item.toParseObject();
     getActivity().setProgressBarIndeterminateVisibility(true);
     parseObject.saveInBackground(new SaveCallback() {
@@ -86,13 +87,17 @@ public class BucketListFragment extends Fragment {
       public void done(ParseException e) {
         getActivity().setProgressBarIndeterminateVisibility(false);
         if (e == null) {
-          fetchNew();
+          fetchNew(item);
         } else {
           Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
       }
     });
 
+  }
+
+  private void fetchNew(BucketListItem item) {
+   bucketListAdapter.fetchNew(item);
   }
 
   @Override

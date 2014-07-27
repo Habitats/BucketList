@@ -30,7 +30,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/et_title"
-                android:textColor="@color/white"
                 android:layout_marginLeft="@dimen/padding_standard"
                 android:layout_marginRight="@dimen/padding_standard"
                 android:hint="title"

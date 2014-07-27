@@ -151,4 +151,19 @@ public class BucketListItem implements Comparable<BucketListItem> {
   public boolean isCompleted() {
     return completed;
   }
+
+  public String getId() {
+    return id;
+  }
+
+  public DateTime getModified() {
+    return modified;
+  }
+
+  public void update(BucketListItem updatedItem) {
+    this.completed = updatedItem.isCompleted();
+    this.coverColor = updatedItem.getCoverColor();
+    this.description = updatedItem.getDescription();
+    this.modified = updatedItem.getModified();
+  }
 }

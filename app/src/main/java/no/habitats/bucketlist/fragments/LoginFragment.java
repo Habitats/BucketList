@@ -107,20 +107,19 @@ public class LoginFragment extends Fragment {
     public void onClick(View v) {
       String username = usernameField.getText().toString().trim();
       String password = passwordField.getText().toString().trim();
-
-      if (username.isEmpty() || password.isEmpty()) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Fill in all the fields")//
-            .setTitle("Field Error")//
-            .setPositiveButton(android.R.string.ok, null)//
-            .create()//
-            .show();// ;
-      } else {
-        if (v.getId() == R.id.b_login) {
+      if (v.getId() == R.id.b_login) {
+        if (username.isEmpty() || password.isEmpty()) {
+          AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+          builder.setMessage("Fill in all the fields")//
+              .setTitle("Field Error")//
+              .setPositiveButton(android.R.string.ok, null)//
+              .create()//
+              .show();// ;
+        } else {
           login(username, password);
-        } else if (v.getId() == R.id.b_signup) {
-          signup(username, password);
         }
+      } else if (v.getId() == R.id.b_signup) {
+        signup(username, password);
       }
     }
   }

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -29,6 +30,8 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
 
   private static final String TAG = BucketListAdapter.class.getSimpleName();
   private final LayoutInflater mInflater;
+  private View coverPhoto;
+  private BucketListItem bucket;
 
   public BucketListAdapter(Activity activity) {
     super(activity, 0);
@@ -51,26 +54,29 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
 
     TextView author = (TextView) view.findViewById(R.id.tv_bucket_author);
     TextView title = (TextView) view.findViewById(R.id.tv_bucket_title);
-    View coverPhoto = view.findViewById(R.id.iv_bucket_background);
+    coverPhoto = view.findViewById(R.id.iv_bucket_background);
     TextView description = (TextView) view.findViewById(R.id.tv_bucket_description);
     TextView modified = (TextView) view.findViewById(R.id.tv_bucket_modified);
     TextView created = (TextView) view.findViewById(R.id.tv_bucket_created);
 
-    BucketListItem bucket = getItem(position);
+    bucket = getItem(position);
     author.setText(bucket.getOwner());
     title.setText(bucket.getTitle());
     modified.setText(bucket.getPrettyModified());
     created.setText(bucket.getPrettyCreated());
     description.setText(bucket.getDescription());
 
-    if (bucket.isCompleted()) {
-      coverPhoto.setBackgroundColor(Color.LTGRAY);
-    }
-    else {
-      coverPhoto.setBackgroundColor(bucket.getCoverColor());
-    }
+    setCoverColor();
 
     return view;
+  }
+
+  public void setCoverColor() {
+    if (bucket.isCompleted()) {
+      coverPhoto.setBackgroundColor(Color.LTGRAY);
+    } else {
+      coverPhoto.setBackgroundColor(bucket.getCoverColor());
+    }
   }
 
   public void fetchNew() {
@@ -86,6 +92,35 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
           Collections.sort(list);
           clear();
           addAll(list);
+          notifyDataSetChanged();
+        }
+      }
+    });
+  }
+
+  public void fetchNew(final BucketListItem item) {
+    ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
+    query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
+    ((Activity) getContext()).setProgressBarIndeterminateVisibility(true);
+    query.getInBackground(item.getId(), new GetCallback<ParseObject>() {
+
+      @Override
+      public void done(ParseObject parseObject, ParseException e) {
+        ((Activity) getContext()).setProgressBarIndeterminateVisibility(false);
+        if (e == null) {
+          BucketListItem updatedItem = BucketListItem.fromParseObject(parseObject);
+          int position = getPosition(item);
+//          List<BucketListItem> newItems = new ArrayList<BucketListItem>();
+//          for (int i = 0; i < getCount(); i++) {
+//            if (i == position) {
+//              newItems.add(updatedItem);
+//            } else {
+//              newItems.add(getItem(i));
+//            }
+//          }
+//          Collections.sort(newItems);
+//          addAll(newItems);
+          getItem(position).update(updatedItem);
           notifyDataSetChanged();
         }
       }

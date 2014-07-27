@@ -89,7 +89,7 @@ public class MainActivity extends Activity
     bundle.putString(C.USERNAME, username);
     bundle.putString(C.PASSWORD, password);
     signupFragment.setArguments(bundle);
-    getFragmentManager().beginTransaction().replace(R.id.container, signupFragment).commit();
+    getFragmentManager().beginTransaction().replace(R.id.container, signupFragment).addToBackStack(null).commit();
   }
 
   @Override
@@ -100,7 +100,7 @@ public class MainActivity extends Activity
   @Override
   public void addToBucketList() {
     newBucketItemFragment = NewBucketListItemFragment.newInstance();
-    getFragmentManager().beginTransaction().add(R.id.container, newBucketItemFragment).commit();
+    getFragmentManager().beginTransaction().add(R.id.container, newBucketItemFragment).addToBackStack(null).commit();
   }
 
   @Override
