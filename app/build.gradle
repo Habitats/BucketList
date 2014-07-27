@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+
+
+    android {
+        compileSdkVersion 20
+        buildToolsVersion "20.0.0"
+
+        defaultConfig {
+            applicationId "no.habitats.bucketlist"
+            minSdkVersion 16
+            targetSdkVersion 20
+            versionCode 1
+            versionName "1.0"
+        }
+        buildTypes {
+            release {
+                runProguard false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+                buildConfigField "String", "BuildType", "\"release\""
+                resValue "string", "app_name", "BucketList"
+            }
+
+            debug {
+                buildConfigField "String", "BuildType", "\"debug\""
+                versionNameSuffix " debug"
+                applicationIdSuffix ".debug"
+                resValue "string", "app_name", "BucketList (debug)"
+            }
+        }
+    }
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android.gms:play-services:4.2.42'
+    compile 'joda-time:joda-time:2.3'
+    compile 'com.crashlytics.android:crashlytics:1.+'
+}
