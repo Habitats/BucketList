@@ -2,6 +2,7 @@ package no.habitats.bucketlist.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,13 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
     modified.setText(bucket.getPrettyModified());
     created.setText(bucket.getPrettyCreated());
     description.setText(bucket.getDescription());
-    coverPhoto.setBackgroundColor(bucket.getCoverColor());
+
+    if (bucket.isCompleted()) {
+      coverPhoto.setBackgroundColor(Color.LTGRAY);
+    }
+    else {
+      coverPhoto.setBackgroundColor(bucket.getCoverColor());
+    }
 
     return view;
   }
@@ -69,11 +76,11 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
   public void fetchNew() {
     ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
     query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
-    ((Activity)getContext()).setProgressBarIndeterminateVisibility(true);
+    ((Activity) getContext()).setProgressBarIndeterminateVisibility(true);
     query.findInBackground(new FindCallback<ParseObject>() {
       @Override
       public void done(List<ParseObject> parseObjects, ParseException e) {
-        ((Activity)getContext()).setProgressBarIndeterminateVisibility(false);
+        ((Activity) getContext()).setProgressBarIndeterminateVisibility(false);
         if (e == null) {
           List<BucketListItem> list = BucketListItem.fromParseObjects(parseObjects);
           Collections.sort(list);

@@ -15,4 +15,5 @@ public class C {
   public static final String USER = "User";
 
   public static final String COVER_COLOR = "coverColor";
+  public static final String COMPLETED = "completed";
 }

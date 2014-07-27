@@ -2,16 +2,24 @@ package no.habitats.bucketlist.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import no.habitats.bucketlist.R;
 import no.habitats.bucketlist.adapters.BucketListAdapter;
 import no.habitats.bucketlist.listeners.BuckerListFragmentListener;
+import no.habitats.bucketlist.models.BucketListItem;
 
 
 public class BucketListFragment extends Fragment {
@@ -45,6 +53,12 @@ public class BucketListFragment extends Fragment {
     bucketListAdapter = new BucketListAdapter(getActivity());
     ListView bucketList = (ListView) rootView.findViewById(R.id.bucket_list);
     bucketList.setAdapter(bucketListAdapter);
+    bucketList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        clickedBucket(bucketListAdapter.getItem(position), view);
+      }
+    });
 
     final Button addToBucketListButton = (Button) rootView.findViewById(R.id.b_add_to_bucket_list);
     addToBucketListButton.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +70,29 @@ public class BucketListFragment extends Fragment {
 
     fetchNew();
     return rootView;
+  }
+
+  private void clickedBucket(BucketListItem item, View view) {
+    completeBucket(item,view);
+  }
+
+  private void completeBucket(BucketListItem item, View view) {
+    view.setBackgroundColor(Color.LTGRAY);
+    item.toggleComplete();
+    ParseObject parseObject = item.toParseObject();
+    getActivity().setProgressBarIndeterminateVisibility(true);
+    parseObject.saveInBackground(new SaveCallback() {
+      @Override
+      public void done(ParseException e) {
+        getActivity().setProgressBarIndeterminateVisibility(false);
+        if (e == null) {
+          fetchNew();
+        } else {
+          Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+      }
+    });
+
   }
 
   @Override
