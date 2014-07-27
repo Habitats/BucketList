@@ -69,9 +69,11 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
   public void fetchNew() {
     ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
     query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
+    ((Activity)getContext()).setProgressBarIndeterminateVisibility(true);
     query.findInBackground(new FindCallback<ParseObject>() {
       @Override
       public void done(List<ParseObject> parseObjects, ParseException e) {
+        ((Activity)getContext()).setProgressBarIndeterminateVisibility(false);
         if (e == null) {
           List<BucketListItem> list = BucketListItem.fromParseObjects(parseObjects);
           Collections.sort(list);

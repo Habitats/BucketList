@@ -62,9 +62,11 @@ public class LoginFragment extends Fragment {
 
   private void login(String username, String password) {
 
+    getActivity().setProgressBarIndeterminateVisibility(true);
     ParseUser.logInInBackground(username, password, new LogInCallback() {
       @Override
       public void done(ParseUser parseUser, ParseException e) {
+        getActivity().setProgressBarIndeterminateVisibility(false);
         if (e == null) {
           mListener.onLoginSuccess(parseUser);
         } else {

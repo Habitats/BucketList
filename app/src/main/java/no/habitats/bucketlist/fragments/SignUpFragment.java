@@ -86,13 +86,15 @@ public class SignUpFragment extends Fragment {
     user.setPassword(password);
     user.setEmail(email);
 
+    getActivity().setProgressBarIndeterminateVisibility(true);
     user.signUpInBackground(new SignUpCallback() {
       @Override
       public void done(ParseException e) {
-        if(e == null) {
+        getActivity().setProgressBarIndeterminateVisibility(false);
+        if (e == null) {
           mListener.onSignupComplete();
-        }else{
-          Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_LONG).show();
+        } else {
+          Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
           Log.e(TAG, e.getMessage());
         }
       }

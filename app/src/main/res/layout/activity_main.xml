@@ -7,12 +7,4 @@
              tools:ignore="MergeRootFrame"
         >
 
-    <fragment
-            android:name="no.habitats.bucketlist.fragments.NewBucketListItemFragment"
-            android:id="@+id/new_item"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:layout_gravity="bottom"
-            />
-
 </FrameLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     Crashlytics.start(this);
     setContentView(R.layout.activity_main);
 
@@ -79,7 +81,6 @@ public class MainActivity extends Activity
 
   @Override
   public void onLoginFailed() {
-
   }
 
   @Override
@@ -106,13 +107,15 @@ public class MainActivity extends Activity
   public void createNewBucketListItem(String title, String description) {
     BucketListItem bucketListItem = new BucketListItem(title, description);
     ParseObject item = bucketListItem.toParseObject();
+    setProgressBarIndeterminateVisibility(true);
 
     item.saveInBackground(new SaveCallback() {
       @Override
       public void done(ParseException e) {
+        setProgressBarIndeterminateVisibility(false);
         if (e == null) {
           Toast.makeText(MainActivity.this, "Added to bucketlist", Toast.LENGTH_LONG).show();
-          getFragmentManager().beginTransaction().remove(newBucketItemFragment).commit();
+          getFragmentManager().beginTransaction().remove(newBucketItemFragment).commitAllowingStateLoss();
           bucketListFragment.fetchNew();
         } else {
           Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
