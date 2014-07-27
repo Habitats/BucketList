@@ -5,4 +5,5 @@ package no.habitats.bucketlist.listeners;
  */
 public interface SignUpFragmentListener {
 
+  void onSignupComplete();
 }

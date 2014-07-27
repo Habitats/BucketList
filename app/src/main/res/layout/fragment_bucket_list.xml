@@ -1,13 +1,27 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="no.habitats.bucketlist.fragments.BucketListFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="no.habitats.bucketlist.fragments.BucketListFragment"
+        >
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bucket_list"
+            />
+
+    <Button
+            android:layout_width="fill_parent"
+            android:id="@+id/b_add_to_bucket_list"
+            android:layout_height="wrap_content"
+            android:background="@color/black_alpha_sublte"
+            android:textColor="@color/white"
+            android:text="Add"
+            android:textAllCaps="true"
+            android:layout_alignParentBottom="true"
+            />
+</RelativeLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:id="@+id/bucket_item"
+        >
+
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/iv_bucket_background"
+            android:src="@drawable/sample_1"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            />
+
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/black_alpha_sublte"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            />
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="16dp"
+            >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/white"
+                android:id="@+id/tv_bucket_title"
+                android:textSize="40sp"
+                />
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="Author"
+                    android:id="@+id/tv_bucket_author"
+                    android:paddingRight="16dp"
+                    />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="Description"
+                    android:id="@+id/tv_bucket_description"
+                    />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

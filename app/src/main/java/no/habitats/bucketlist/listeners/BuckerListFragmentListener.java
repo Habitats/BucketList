@@ -5,4 +5,5 @@ package no.habitats.bucketlist.listeners;
  */
 public interface BuckerListFragmentListener {
 
+  void addToBucketList();
 }
