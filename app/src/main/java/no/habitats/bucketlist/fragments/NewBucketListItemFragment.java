@@ -3,20 +3,26 @@ package no.habitats.bucketlist.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 
+import no.habitats.bucketlist.ColorChanger;
 import no.habitats.bucketlist.R;
+import no.habitats.bucketlist.listeners.ColorChangeListener;
 import no.habitats.bucketlist.listeners.NewBucketListItemListener;
 
-public class NewBucketListItemFragment extends Fragment {
+public class NewBucketListItemFragment extends Fragment implements ColorChangeListener {
 
   private static final String TAG = NewBucketListItemFragment.class.getSimpleName();
   private NewBucketListItemListener mListener;
+  private View background;
+  private View rootView;
 
   public static NewBucketListItemFragment newInstance() {
     NewBucketListItemFragment fragment = new NewBucketListItemFragment();
@@ -39,10 +45,16 @@ public class NewBucketListItemFragment extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_new_item, container, false);
+    rootView = inflater.inflate(R.layout.fragment_new_item, container, false);
 
     final EditText titleField = (EditText) rootView.findViewById(R.id.et_title);
     final EditText descriptionField = (EditText) rootView.findViewById(R.id.et_description);
+    background = rootView.findViewById(R.id.background);
+    SeekBar colorPicker = (SeekBar) rootView.findViewById(R.id.color_seekbar);
+    colorPicker.setOnSeekBarChangeListener(ColorChanger.getChanger());
+    ColorChanger.getChanger().addListener(this);
+    colorPicker.getProgressDrawable().mutate();
+    colorPicker.setProgress((int) (Math.random() * colorPicker.getMax()));
 
     Button NewBucketListItemButton = (Button) rootView.findViewById(R.id.b_create_item);
 
@@ -68,6 +80,14 @@ public class NewBucketListItemFragment extends Fragment {
     mListener = null;
   }
 
+  @Override
+  public void colorChanged(int color) {
+    SeekBar colorSeeker = (SeekBar) rootView.findViewById(R.id.color_seekbar);
+
+    colorSeeker.getThumb().mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+    colorSeeker.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+  }
+
   private class NewBucketListItemOnClickListener implements View.OnClickListener {
 
     private final EditText titleField;
@@ -83,15 +103,15 @@ public class NewBucketListItemFragment extends Fragment {
       String title = titleField.getText().toString().trim();
       String description = descriptionField.getText().toString().trim();
 
-      if (title.isEmpty() || description.isEmpty()) {
+      if (title.isEmpty()) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Fill in all the fields")//
-            .setTitle("Field Error")//
+        builder.setMessage("You need a title!")//
+            .setTitle("Error")//
             .setPositiveButton(android.R.string.ok, null)//
             .create()//
             .show();// ;
       } else {
-        mListener.createNewBucketListItem(title, description);
+        mListener.createNewBucketListItem(title, description, ColorChanger.getChanger().getColor());
       }
     }
   }

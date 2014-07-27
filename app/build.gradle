@@ -29,14 +29,14 @@ repositories {
                 runProguard false
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
                 buildConfigField "String", "BuildType", "\"release\""
-                resValue "string", "app_name", "BucketList"
+                resValue "string", "app_name", "Bucket List"
             }
 
             debug {
                 buildConfigField "String", "BuildType", "\"debug\""
                 versionNameSuffix " debug"
                 applicationIdSuffix ".debug"
-                resValue "string", "app_name", "BucketList (debug)"
+                resValue "string", "app_name", "Bucket List (debug)"
             }
         }
     }

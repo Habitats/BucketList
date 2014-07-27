@@ -24,6 +24,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
   private ParseUser owner;
   private String title;
   private String description;
+  private int coverColor;
 
   public BucketListItem(String title, String description) {
     this.title = title;
@@ -70,6 +71,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
     parse.put(C.TITLE, title);
     parse.setObjectId(id);
     parse.put(C.OWNER, ParseUser.getCurrentUser());
+    parse.put(C.COVER_COLOR, coverColor);
 
     return parse;
   }
@@ -95,7 +97,11 @@ public class BucketListItem implements Comparable<BucketListItem> {
     DateTime created = new DateTime(parseObject.getCreatedAt());
     DateTime modified = new DateTime(parseObject.get(C.MODIFIED));
     ParseUser owner = (ParseUser) parseObject.get(C.OWNER);
-    return new BucketListItem(id, title, description, created).setModified(modified).setOwner(owner);
+    int coverColor = parseObject.getInt(C.COVER_COLOR);
+    return new BucketListItem(id, title, description, created) //
+        .setModified(modified) //
+        .setOwner(owner) //
+        .setCoverColor(coverColor);
   }
 
 
@@ -121,4 +127,12 @@ public class BucketListItem implements Comparable<BucketListItem> {
     return created;
   }
 
+  public BucketListItem setCoverColor(int color) {
+    this.coverColor = color;
+    return this;
+  }
+
+  public int getCoverColor() {
+    return coverColor;
+  }
 }

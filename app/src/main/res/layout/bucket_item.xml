@@ -10,16 +10,8 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/iv_bucket_background"
-            android:src="@drawable/sample_1"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            />
-
-    <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@color/black_alpha_sublte"
-            android:scaleType="centerCrop"
+            android:background="@color/red"
             android:adjustViewBounds="true"
             />
 

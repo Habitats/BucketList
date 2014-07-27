@@ -104,8 +104,8 @@ public class MainActivity extends Activity
   }
 
   @Override
-  public void createNewBucketListItem(String title, String description) {
-    BucketListItem bucketListItem = new BucketListItem(title, description);
+  public void createNewBucketListItem(String title, String description, int color) {
+    BucketListItem bucketListItem = new BucketListItem(title, description).setCoverColor(color);
     ParseObject item = bucketListItem.toParseObject();
     setProgressBarIndeterminateVisibility(true);
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -51,7 +50,7 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
 
     TextView author = (TextView) view.findViewById(R.id.tv_bucket_author);
     TextView title = (TextView) view.findViewById(R.id.tv_bucket_title);
-    ImageView coverPhoto = (ImageView) view.findViewById(R.id.iv_bucket_background);
+    View coverPhoto = view.findViewById(R.id.iv_bucket_background);
     TextView description = (TextView) view.findViewById(R.id.tv_bucket_description);
     TextView modified = (TextView) view.findViewById(R.id.tv_bucket_modified);
     TextView created = (TextView) view.findViewById(R.id.tv_bucket_created);
@@ -62,6 +61,7 @@ public class BucketListAdapter extends ArrayAdapter<BucketListItem> {
     modified.setText(bucket.getPrettyModified());
     created.setText(bucket.getPrettyCreated());
     description.setText(bucket.getDescription());
+    coverPhoto.setBackgroundColor(bucket.getCoverColor());
 
     return view;
   }
