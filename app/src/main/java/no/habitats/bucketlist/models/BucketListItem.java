@@ -1,5 +1,7 @@
 package no.habitats.bucketlist.models;
 
+import com.google.gson.Gson;
+
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -10,6 +12,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.habitats.bucketlist.BucketListApplication;
 import no.habitats.bucketlist.C;
 
 /**
@@ -18,10 +21,10 @@ import no.habitats.bucketlist.C;
 public class BucketListItem implements Comparable<BucketListItem> {
 
   private String id;
-  private DateTime created;
-  private DateTime modified;
+  private long created;
+  private long modified;
   private boolean completed;
-  private ParseUser owner;
+  private String ownerId;
   private String title;
   private String description;
   private int coverColor;
@@ -33,12 +36,12 @@ public class BucketListItem implements Comparable<BucketListItem> {
 
   public BucketListItem(String id, String title, String description, DateTime created) {
     this(title, description);
+    this.created = created.getMillis();
     this.id = id;
-    this.created = created;
   }
 
   public String getOwner() {
-    return "Author: " + owner.getObjectId();
+    return "Author: " + ownerId;
   }
 
   public String getTitle() {
@@ -56,12 +59,12 @@ public class BucketListItem implements Comparable<BucketListItem> {
   }
 
   public BucketListItem setOwner(ParseUser owner) {
-    this.owner = owner;
+    this.ownerId = owner.getObjectId();
     return this;
   }
 
   private BucketListItem setModified(DateTime dateTime) {
-    this.modified = dateTime;
+    this.modified = dateTime.getMillis();
     return this;
   }
 
@@ -107,7 +110,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
         .setCoverColor(coverColor);
   }
 
-  private BucketListItem setCompleted(boolean completed) {
+  public BucketListItem setCompleted(boolean completed) {
     this.completed = completed;
     return this;
   }
@@ -115,15 +118,20 @@ public class BucketListItem implements Comparable<BucketListItem> {
 
   @Override
   public int compareTo(BucketListItem another) {
-    return (int) ((another.getCreated().getMillis() / 1000) - (getCreated().getMillis() / 1000));
+    if (BucketListApplication.getApplication().getSortBy() == C.SORT_MODIFIED) {
+      return (int) ((another.getModified().getMillis() / 1000) - (getModified().getMillis() / 1000));
+    } else if (BucketListApplication.getApplication().getSortBy() == C.SORT_CREATED) {
+      return (int) ((another.getCreated().getMillis() / 1000) - (getCreated().getMillis() / 1000));
+    }
+    return 0;
   }
 
   public String getPrettyCreated() {
-    return "Created: " + prettifyDate(created);
+    return "Created: " + prettifyDate(getCreated());
   }
 
   public String getPrettyModified() {
-    return "Updated: " + prettifyDate(modified);
+    return "Updated: " + prettifyDate(getModified());
   }
 
   private String prettifyDate(DateTime date) {
@@ -132,7 +140,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
   }
 
   private DateTime getCreated() {
-    return created;
+    return new DateTime(created);
   }
 
   public BucketListItem setCoverColor(int color) {
@@ -157,13 +165,30 @@ public class BucketListItem implements Comparable<BucketListItem> {
   }
 
   public DateTime getModified() {
-    return modified;
+    return new DateTime(modified);
   }
 
   public void update(BucketListItem updatedItem) {
+    this.title = updatedItem.getTitle();
     this.completed = updatedItem.isCompleted();
     this.coverColor = updatedItem.getCoverColor();
     this.description = updatedItem.getDescription();
-    this.modified = updatedItem.getModified();
+    this.modified = updatedItem.getModified().getMillis();
+  }
+
+  public static BucketListItem fromJson(String json) {
+    return new Gson().fromJson(json, BucketListItem.class);
+  }
+
+  public static String toJson(BucketListItem item) {
+    return new Gson().toJson(item, BucketListItem.class);
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public void setModified() {
+    modified = new DateTime().getMillis();
   }
 }

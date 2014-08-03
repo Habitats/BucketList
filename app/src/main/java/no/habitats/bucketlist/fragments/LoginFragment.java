@@ -21,7 +21,7 @@ import no.habitats.bucketlist.listeners.LoginFragmentListener;
 
 public class LoginFragment extends Fragment {
 
-  private static final String TAG = LoginFragment.class.getSimpleName();
+public static final String TAG = LoginFragment.class.getSimpleName();
   private LoginFragmentListener mListener;
 
   public static LoginFragment newInstance() {

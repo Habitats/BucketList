@@ -1,7 +1,6 @@
 package no.habitats.bucketlist.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
+import no.habitats.bucketlist.BucketListApplication;
 import no.habitats.bucketlist.ColorChanger;
 import no.habitats.bucketlist.R;
 import no.habitats.bucketlist.listeners.ColorChangeListener;
@@ -19,7 +19,7 @@ import no.habitats.bucketlist.listeners.NewBucketListItemListener;
 
 public class NewBucketListItemFragment extends Fragment implements ColorChangeListener {
 
-  private static final String TAG = NewBucketListItemFragment.class.getSimpleName();
+  public static final String TAG = NewBucketListItemFragment.class.getSimpleName();
   private NewBucketListItemListener mListener;
   private View background;
   private View rootView;
@@ -104,14 +104,10 @@ public class NewBucketListItemFragment extends Fragment implements ColorChangeLi
       String description = descriptionField.getText().toString().trim();
 
       if (title.isEmpty()) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You need a title!")//
-            .setTitle("Error")//
-            .setPositiveButton(android.R.string.ok, null)//
-            .create()//
-            .show();// ;
+        BucketListApplication.getApplication().displayErrorDialog("Error", "You need to enter a title!");
       } else {
-        mListener.createNewBucketListItem(title, description, ColorChanger.getChanger().getColor());
+        mListener.createBucketItem(title, description, ColorChanger.getChanger().getColor());
+        getActivity().getFragmentManager().popBackStack();
       }
     }
   }

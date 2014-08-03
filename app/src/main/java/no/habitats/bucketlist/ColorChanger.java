@@ -17,6 +17,7 @@ public class ColorChanger implements SeekBar.OnSeekBarChangeListener {
   private static ColorChanger instance;
   private int color;
   private final List<ColorChangeListener> listeners;
+  private int progress;
 
   public static ColorChanger getChanger() {
     if (instance == null) {
@@ -61,6 +62,7 @@ public class ColorChanger implements SeekBar.OnSeekBarChangeListener {
 
   @Override
   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    this.progress = progress;
     setBackgroundColor(toHsv(progress));
   }
 
@@ -70,5 +72,11 @@ public class ColorChanger implements SeekBar.OnSeekBarChangeListener {
 
   @Override
   public void onStopTrackingTouch(SeekBar seekBar) {
+  }
+
+  public int toProgress(int coverColor) {
+    float hsv[] = new float[3];
+    Color.colorToHSV(coverColor, hsv);
+    return (int) (hsv[0] * 100 / 360);
   }
 }

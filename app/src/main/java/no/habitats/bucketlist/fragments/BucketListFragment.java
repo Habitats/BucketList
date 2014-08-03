@@ -7,25 +7,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.SaveCallback;
+import java.util.List;
 
 import no.habitats.bucketlist.R;
 import no.habitats.bucketlist.adapters.BucketListAdapter;
-import no.habitats.bucketlist.listeners.BuckerListFragmentListener;
+import no.habitats.bucketlist.listeners.BucketListFragmentListener;
 import no.habitats.bucketlist.models.BucketListItem;
 
 
-public class BucketListFragment extends Fragment {
+public class BucketListFragment extends Fragment
+    implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
-  private BuckerListFragmentListener mListener;
+public static final String TAG = BucketListFragment.class.getSimpleName();
+  private BucketListFragmentListener mListener;
   private BucketListAdapter bucketListAdapter;
   private ListView bucketList;
+  private List<BucketListItem> bucketListItems;
 
   public static BucketListFragment newInstance() {
     BucketListFragment fragment = new BucketListFragment();
@@ -53,61 +52,31 @@ public class BucketListFragment extends Fragment {
     bucketListAdapter = new BucketListAdapter(getActivity());
     bucketList = (ListView) rootView.findViewById(R.id.bucket_list);
     bucketList.setAdapter(bucketListAdapter);
-    bucketList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        clickedBucket(bucketListAdapter.getItem(position), view);
-      }
-    });
 
-    final Button addToBucketListButton = (Button) rootView.findViewById(R.id.b_add_to_bucket_list);
-    addToBucketListButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mListener.addToBucketList();
-      }
-    });
+    bucketList.setOnItemClickListener(this);
+    bucketList.setOnItemLongClickListener(this);
 
     fetchNew();
     return rootView;
   }
 
-  private void clickedBucket(BucketListItem item, View view) {
-    completeBucket(item,view);
-  }
-
-  private void completeBucket(final BucketListItem item, View view) {
+  private void completeBucketItem(final BucketListItem item) {
     item.toggleComplete();
-    bucketListAdapter.setCoverColor();
-    bucketListAdapter.notifyDataSetChanged();
-    ParseObject parseObject = item.toParseObject();
-    getActivity().setProgressBarIndeterminateVisibility(true);
-    parseObject.saveInBackground(new SaveCallback() {
-      @Override
-      public void done(ParseException e) {
-        getActivity().setProgressBarIndeterminateVisibility(false);
-        if (e == null) {
-          fetchNew(item);
-        } else {
-          Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-      }
-    });
-
+    mListener.update(item);
   }
 
-  private void fetchNew(BucketListItem item) {
-   bucketListAdapter.fetchNew(item);
+  public void fetchNew(BucketListItem item) {
+    bucketListAdapter.fetchNew(item);
   }
 
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
     try {
-      mListener = (BuckerListFragmentListener) activity;
+      mListener = (BucketListFragmentListener) activity;
     } catch (ClassCastException e) {
       throw new ClassCastException(
-          activity.toString() + " must implement " + BuckerListFragmentListener.class.getSimpleName());
+          activity.toString() + " must implement " + BucketListFragmentListener.class.getSimpleName());
     }
   }
 
@@ -117,8 +86,28 @@ public class BucketListFragment extends Fragment {
     mListener = null;
   }
 
-
   public void fetchNew() {
     bucketListAdapter.fetchNew();
+  }
+
+  private void enterBucket(BucketListItem bucketItem) {
+    mListener.enterBucketItem(bucketItem);
+  }
+
+  // ITEM CLICK EVENTS
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    enterBucket(bucketListAdapter.getItem(position));
+  }
+
+
+  @Override
+  public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    completeBucketItem(bucketListAdapter.getItem(position));
+    return true;
+  }
+
+  public void update(final BucketListItem bucketItem) {
+    bucketListAdapter.update(bucketItem);
   }
 }

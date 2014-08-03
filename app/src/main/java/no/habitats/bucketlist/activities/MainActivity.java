@@ -13,13 +13,15 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import no.habitats.bucketlist.BucketListApplication;
 import no.habitats.bucketlist.C;
 import no.habitats.bucketlist.R;
+import no.habitats.bucketlist.fragments.BucketItemFragment;
 import no.habitats.bucketlist.fragments.BucketListFragment;
 import no.habitats.bucketlist.fragments.LoginFragment;
 import no.habitats.bucketlist.fragments.NewBucketListItemFragment;
 import no.habitats.bucketlist.fragments.SignUpFragment;
-import no.habitats.bucketlist.listeners.BuckerListFragmentListener;
+import no.habitats.bucketlist.listeners.BucketListFragmentListener;
 import no.habitats.bucketlist.listeners.LoginFragmentListener;
 import no.habitats.bucketlist.listeners.NewBucketListItemListener;
 import no.habitats.bucketlist.listeners.SignUpFragmentListener;
@@ -27,12 +29,11 @@ import no.habitats.bucketlist.models.BucketListItem;
 
 
 public class MainActivity extends Activity
-    implements LoginFragmentListener, BuckerListFragmentListener, SignUpFragmentListener, NewBucketListItemListener {
+    implements LoginFragmentListener, BucketListFragmentListener, SignUpFragmentListener, NewBucketListItemListener {
 
   private BucketListFragment bucketListFragment;
   private LoginFragment loginFragment;
   private SignUpFragment signupFragment;
-  private NewBucketListItemFragment newBucketItemFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,8 @@ public class MainActivity extends Activity
     if (id == R.id.action_logout) {
       ParseUser.logOut();
       getFragmentManager().beginTransaction().replace(R.id.container, loginFragment).commit();
-      return true;
+    } else if (id == R.id.action_add) {
+      enterCreateItem();
     }
     return super.onOptionsItemSelected(item);
   }
@@ -98,14 +100,48 @@ public class MainActivity extends Activity
   }
 
   @Override
-  public void addToBucketList() {
-    newBucketItemFragment = NewBucketListItemFragment.newInstance();
-    getFragmentManager().beginTransaction().add(R.id.container, newBucketItemFragment).addToBackStack(null).commit();
+  public void enterCreateItem() {
+    getFragmentManager().beginTransaction()
+        .add(R.id.container, NewBucketListItemFragment.newInstance(), NewBucketListItemFragment.TAG)
+        .addToBackStack(null).commit();
   }
 
   @Override
-  public void createNewBucketListItem(String title, String description, int color) {
-    BucketListItem bucketListItem = new BucketListItem(title, description).setCoverColor(color);
+  public void enterBucketItem(BucketListItem item) {
+    getFragmentManager().beginTransaction().add(R.id.container, BucketItemFragment.newInstance(item))
+        .addToBackStack(null).commit();
+  }
+
+
+  @Override
+  public void update(final BucketListItem bucketItem) {
+    bucketListFragment.update(bucketItem);
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    BucketListApplication.getApplication().setActiveActivity(this);
+  }
+
+  @Override
+  public boolean onNavigateUp() {
+    onBackPressed();
+    return super.onNavigateUp();
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (getFragmentManager().getBackStackEntryCount() > 0) {
+      getFragmentManager().popBackStack();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
+  @Override
+  public void createBucketItem(String title, String description, int color) {
+    final BucketListItem bucketListItem = new BucketListItem(title, description).setCoverColor(color);
     ParseObject item = bucketListItem.toParseObject();
     setProgressBarIndeterminateVisibility(true);
 
@@ -115,7 +151,6 @@ public class MainActivity extends Activity
         setProgressBarIndeterminateVisibility(false);
         if (e == null) {
           Toast.makeText(MainActivity.this, "Added to bucketlist", Toast.LENGTH_LONG).show();
-          getFragmentManager().beginTransaction().remove(newBucketItemFragment).commitAllowingStateLoss();
           bucketListFragment.fetchNew();
         } else {
           Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();

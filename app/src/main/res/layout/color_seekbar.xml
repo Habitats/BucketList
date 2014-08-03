@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<SeekBar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:paddingTop="@dimen/padding_standard"
+        android:id="@+id/color_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_standard"
+        android:paddingRight="@dimen/padding_standard"
+        android:max="100"
+        android:layout_gravity="top"
+        android:progressDrawable="@drawable/seekbardynamic_scrubber_progress_horizontal_holo_light"
+        android:thumb="@drawable/seekbardynamic_scrubber_control_selector_holo_light"
+        tools:showIn="@layout/fragment_bucket_item"
+        />

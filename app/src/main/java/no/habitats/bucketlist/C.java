@@ -16,4 +16,6 @@ public class C {
 
   public static final String COVER_COLOR = "coverColor";
   public static final String COMPLETED = "completed";
+  public static final String SORT_MODIFIED = "sort_modified";
+  public static final String SORT_CREATED = "sort_created";
 }

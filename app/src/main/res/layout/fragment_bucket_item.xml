@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="no.habitats.bucketlist.fragments.BucketItemFragment"
+        >
+
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/iv_bucket_background"
+            android:scaleType="centerCrop"
+            android:background="@color/red"
+            android:adjustViewBounds="true"
+            />
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            >
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/white"
+                android:id="@+id/tv_bucket_title"
+                android:textSize="40sp"
+                />
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Author"
+                android:id="@+id/tv_bucket_author"
+                android:paddingRight="16dp"
+                />
+
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textColor="@color/white"
+                android:id="@+id/cb_completed"
+                android:checked="false"
+                />
+
+        <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Description"
+                android:paddingRight="16dp"
+                android:id="@+id/tv_bucket_description"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                android:text="Created"
+                android:textSize="10sp"
+                android:paddingRight="16dp"
+                android:id="@+id/tv_bucket_created"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                android:text="Modified"
+                android:id="@+id/tv_bucket_modified"
+                />
+
+        <include layout="@layout/color_seekbar"/>
+
+        <Button
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:background="@color/black"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:id="@+id/b_save"
+                />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

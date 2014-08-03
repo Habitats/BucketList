@@ -5,5 +5,5 @@ package no.habitats.bucketlist.listeners;
  */
 public interface NewBucketListItemListener {
 
-  void createNewBucketListItem(String title, String description, int color);
+  void createBucketItem(String title, String description, int color);
 }
