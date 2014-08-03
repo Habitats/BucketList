@@ -110,4 +110,12 @@ public static final String TAG = BucketListFragment.class.getSimpleName();
   public void update(final BucketListItem bucketItem) {
     bucketListAdapter.update(bucketItem);
   }
+
+  public void update() {
+    bucketListAdapter.update();
+  }
+
+  public void delete(BucketListItem bucketItem) {
+    bucketListAdapter.delete(bucketItem);
+  }
 }

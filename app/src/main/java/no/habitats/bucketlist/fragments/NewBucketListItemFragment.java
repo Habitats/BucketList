@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,6 +47,12 @@ public class NewBucketListItemFragment extends Fragment implements ColorChangeLi
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     rootView = inflater.inflate(R.layout.fragment_new_item, container, false);
+    rootView.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        return true;
+      }
+    });
 
     final EditText titleField = (EditText) rootView.findViewById(R.id.et_title);
     final EditText descriptionField = (EditText) rootView.findViewById(R.id.et_description);

@@ -105,8 +105,8 @@ public static final String TAG = LoginFragment.class.getSimpleName();
 
     @Override
     public void onClick(View v) {
-      String username = usernameField.getText().toString().trim();
-      String password = passwordField.getText().toString().trim();
+      String username = usernameField.getText().toString().trim().toLowerCase();
+      String password = passwordField.getText().toString().trim().toLowerCase();
       if (v.getId() == R.id.b_login) {
         if (username.isEmpty() || password.isEmpty()) {
           AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

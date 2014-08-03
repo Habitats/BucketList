@@ -16,6 +16,13 @@ public class C {
 
   public static final String COVER_COLOR = "coverColor";
   public static final String COMPLETED = "completed";
-  public static final String SORT_MODIFIED = "sort_modified";
-  public static final String SORT_CREATED = "sort_created";
+  public static final String TABLE_BUCKET_LIST = "BucketList";
+
+  public enum Sort {
+    MODIFIED, CREATED, COLOR;
+
+    public Sort next() {
+      return values()[(ordinal() + 1) % 3];
+    }
+  }
 }

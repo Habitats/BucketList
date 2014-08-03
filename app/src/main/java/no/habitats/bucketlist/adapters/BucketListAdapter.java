@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -84,6 +85,10 @@ public class BucketListAdapter extends BaseAdapter {
     created.setText(bucket.getPrettyCreated());
     description.setText(bucket.getDescription());
 
+    if (description.getText().toString().trim().length() <= 0) {
+      description.setVisibility(View.GONE);
+    }
+
     setCoverColor();
 
     return view;
@@ -137,7 +142,7 @@ public class BucketListAdapter extends BaseAdapter {
   }
 
   public void fetchNew() {
-    ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
+    ParseQuery<ParseObject> query = ParseQuery.getQuery(C.TABLE_BUCKET_LIST);
     query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
     BucketListApplication.getApplication().setLoading(true);
     query.findInBackground(new FindCallback<ParseObject>() {
@@ -154,7 +159,7 @@ public class BucketListAdapter extends BaseAdapter {
   }
 
   public void fetchNew(final BucketListItem item) {
-    ParseQuery<ParseObject> query = ParseQuery.getQuery("BucketList");
+    ParseQuery<ParseObject> query = ParseQuery.getQuery(C.TABLE_BUCKET_LIST);
     query.whereEqualTo(C.OWNER, ParseUser.getCurrentUser());
     BucketListApplication.getApplication().setLoading(true);
     query.getInBackground(item.getId(), new GetCallback<ParseObject>() {
@@ -185,5 +190,20 @@ public class BucketListAdapter extends BaseAdapter {
   public void add(BucketListItem item) {
     items.add(item);
     update();
+  }
+
+  public void delete(final BucketListItem bucketItem) {
+    items.remove(bucketItem);
+    update();
+
+    ParseObject object = bucketItem.toParseObject();
+    object.deleteInBackground(new DeleteCallback() {
+      @Override
+      public void done(ParseException e) {
+        fetchNew();
+        BucketListApplication.getApplication()
+            .displayToast("\"" + bucketItem.getTitle() + "\" was deleted from the server.");
+      }
+    });
   }
 }

@@ -61,9 +61,9 @@ public class SignUpFragment extends Fragment {
     SignUpButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        String username = usernameField.getText().toString().trim();
-        String password = passwordField.getText().toString().trim();
-        String email = emailField.getText().toString().trim();
+        String username = usernameField.getText().toString().trim().toLowerCase();
+        String password = passwordField.getText().toString().trim().toLowerCase();
+        String email = emailField.getText().toString().trim().toLowerCase();
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
           AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

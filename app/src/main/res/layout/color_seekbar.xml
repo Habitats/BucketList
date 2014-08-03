@@ -4,7 +4,6 @@
 <SeekBar
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:paddingTop="@dimen/padding_standard"
         android:id="@+id/color_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

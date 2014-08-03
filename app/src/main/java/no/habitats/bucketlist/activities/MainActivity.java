@@ -72,6 +72,9 @@ public class MainActivity extends Activity
       getFragmentManager().beginTransaction().replace(R.id.container, loginFragment).commit();
     } else if (id == R.id.action_add) {
       enterCreateItem();
+    } else if (id == R.id.action_sort) {
+      BucketListApplication.getApplication().toggleSortBy();
+      bucketListFragment.update();
     }
     return super.onOptionsItemSelected(item);
   }
@@ -87,6 +90,9 @@ public class MainActivity extends Activity
 
   @Override
   public void onStartSignup(String username, String password) {
+    username = username.toLowerCase();
+    password = password.toLowerCase();
+
     Bundle bundle = new Bundle();
     bundle.putString(C.USERNAME, username);
     bundle.putString(C.PASSWORD, password);
@@ -101,14 +107,15 @@ public class MainActivity extends Activity
 
   @Override
   public void enterCreateItem() {
-    getFragmentManager().beginTransaction()
-        .add(R.id.container, NewBucketListItemFragment.newInstance(), NewBucketListItemFragment.TAG)
+    getFragmentManager().beginTransaction() //
+        .add(R.id.middle_container, NewBucketListItemFragment.newInstance(), NewBucketListItemFragment.TAG) //
         .addToBackStack(null).commit();
   }
 
   @Override
   public void enterBucketItem(BucketListItem item) {
-    getFragmentManager().beginTransaction().add(R.id.container, BucketItemFragment.newInstance(item))
+    getFragmentManager().beginTransaction() //
+        .add(R.id.middle_container, BucketItemFragment.newInstance(item), BucketItemFragment.TAG) //
         .addToBackStack(null).commit();
   }
 
@@ -116,6 +123,7 @@ public class MainActivity extends Activity
   @Override
   public void update(final BucketListItem bucketItem) {
     bucketListFragment.update(bucketItem);
+    BucketListApplication.getApplication().pushUpdate();
   }
 
   @Override
@@ -152,11 +160,17 @@ public class MainActivity extends Activity
         if (e == null) {
           Toast.makeText(MainActivity.this, "Added to bucketlist", Toast.LENGTH_LONG).show();
           bucketListFragment.fetchNew();
+          BucketListApplication.getApplication().pushNewItems();
         } else {
           Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
       }
     });
 
+  }
+
+  @Override
+  public void delete(BucketListItem bucketItem) {
+    bucketListFragment.delete(bucketItem);
   }
 }

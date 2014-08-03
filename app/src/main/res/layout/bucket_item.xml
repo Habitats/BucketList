@@ -2,26 +2,23 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/bucket_item"
         >
 
-    <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+    <LinearLayout
+            android:orientation="vertical"
             android:id="@+id/iv_bucket_background"
             android:scaleType="centerCrop"
             android:background="@color/red"
-            android:adjustViewBounds="true"
-            />
-
-    <LinearLayout
-            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/padding_standard"
+            android:paddingRight="@dimen/padding_standard"
+            android:paddingLeft="@dimen/padding_standard"
             >
+
 
         <TextView
                 android:layout_width="wrap_content"
@@ -42,42 +39,57 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="Author"
-                    android:id="@+id/tv_bucket_author"
-                    android:paddingRight="16dp"
-                    />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:text="Description"
+
                     android:paddingRight="16dp"
                     android:id="@+id/tv_bucket_description"
                     />
+
 
         </LinearLayout>
 
 
         <TextView
                 android:layout_width="wrap_content"
+                android:textAllCaps="true"
+
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:layout_marginTop="5dp"
-                android:text="Created"
                 android:textSize="10sp"
                 android:paddingRight="16dp"
-                android:id="@+id/tv_bucket_created"
-                />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="10sp"
-                android:textColor="@color/white"
-                android:text="Modified"
+                android:text="Updated"
                 android:id="@+id/tv_bucket_modified"
                 />
+
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+            <TextView
+                    android:textAllCaps="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:text="Created"
+                    android:id="@+id/tv_bucket_created"
+                    />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="by"
+                    android:id="@+id/tv_bucket_author"
+                    android:textAllCaps="true"
+                    android:textSize="10sp"
+                    />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

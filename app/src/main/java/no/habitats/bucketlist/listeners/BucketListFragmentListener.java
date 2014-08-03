@@ -12,4 +12,6 @@ public interface BucketListFragmentListener {
   void enterBucketItem(BucketListItem item);
 
   void update(BucketListItem bucketItem);
+
+  void delete(BucketListItem bucketItem);
 }

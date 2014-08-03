@@ -14,6 +14,7 @@ import java.util.List;
 
 import no.habitats.bucketlist.BucketListApplication;
 import no.habitats.bucketlist.C;
+import no.habitats.bucketlist.ColorChanger;
 
 /**
  * Created by Patrick on 27.07.2014.
@@ -41,7 +42,7 @@ public class BucketListItem implements Comparable<BucketListItem> {
   }
 
   public String getOwner() {
-    return "Author: " + ownerId;
+    return "By: " + ownerId;
   }
 
   public String getTitle() {
@@ -118,10 +119,14 @@ public class BucketListItem implements Comparable<BucketListItem> {
 
   @Override
   public int compareTo(BucketListItem another) {
-    if (BucketListApplication.getApplication().getSortBy() == C.SORT_MODIFIED) {
+    C.Sort sortBy = BucketListApplication.getApplication().getSortBy();
+    if (sortBy == C.Sort.MODIFIED) {
       return (int) ((another.getModified().getMillis() / 1000) - (getModified().getMillis() / 1000));
-    } else if (BucketListApplication.getApplication().getSortBy() == C.SORT_CREATED) {
+    } else if (sortBy == C.Sort.CREATED) {
       return (int) ((another.getCreated().getMillis() / 1000) - (getCreated().getMillis() / 1000));
+    } else if (sortBy == C.Sort.COLOR) {
+      return ColorChanger.getChanger().toProgress(another.getCoverColor()) -  //
+             ColorChanger.getChanger().toProgress(getCoverColor());
     }
     return 0;
   }

@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.parse.Parse;
 import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+import com.parse.ParseUser;
 import com.parse.PushService;
 
 import no.habitats.bucketlist.activities.MainActivity;
@@ -18,11 +20,13 @@ import no.habitats.bucketlist.activities.MainActivity;
  */
 public class BucketListApplication extends Application {
 
+  public static final String CHANNEL_NEW_ITEMS = "new_items";
+  public static final String CHANNEL_UPDATED_ITEMS = "updated_items";
   private static BucketListApplication instance;
   private boolean loading;
   private Activity activity;
   private EditText input;
-  private String sortBy = C.SORT_MODIFIED;
+  private C.Sort sortBy = C.Sort.MODIFIED;
 
   public static BucketListApplication getApplication() {
     if (instance != null) {
@@ -37,7 +41,27 @@ public class BucketListApplication extends Application {
     super.onCreate();
     instance = this;
     Parse.initialize(this, "ioAXEmBdKceJ9DKmQszmx3NgFU01dFyYfgNZnotn", "ZCY4nYCCf7VoRjt5Q6CMU4y8fA3eepSAJffxa3kP");
+    PushService.setDefaultPushCallback(this, MainActivity.class);
+    // Save the current Installation to Parse.
+    ParseInstallation.getCurrentInstallation().saveInBackground();
 
+    PushService.subscribe(getApplicationContext(), CHANNEL_NEW_ITEMS, MainActivity.class);
+    PushService.subscribe(getApplicationContext(), CHANNEL_UPDATED_ITEMS, MainActivity.class);
+  }
+
+  public void pushUpdate() {
+    ParsePush push = new ParsePush();
+    push.setChannel(CHANNEL_UPDATED_ITEMS);
+    push.setMessage("Bucket List updates from " + ParseUser.getCurrentUser().getUsername() + "!");
+    push.sendInBackground();
+
+  }
+
+  public void pushNewItems() {
+    ParsePush push = new ParsePush();
+    push.setChannel(CHANNEL_NEW_ITEMS);
+    push.setMessage("New Bucket List items added by " + ParseUser.getCurrentUser().getUsername() + "!");
+    push.sendInBackground();
   }
 
   public void setActiveActivity(Activity activity) {
@@ -133,11 +157,12 @@ public class BucketListApplication extends Application {
     });
   }
 
-  public String getSortBy() {
+  public C.Sort getSortBy() {
     return sortBy;
   }
 
-  public void setSortBy(String sortBy) {
-    this.sortBy = sortBy;
+  public void toggleSortBy() {
+    sortBy = sortBy.next();
+    displayToast(sortBy.name());
   }
 }

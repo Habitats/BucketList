@@ -2,7 +2,7 @@ package no.habitats.bucketlist.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,7 +27,6 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
 
   private BucketListFragmentListener mListener;
   private BucketListItem bucketItem;
-  private View coverPhoto;
   private SeekBar colorPicker;
 
   public static BucketItemFragment newInstance(BucketListItem bucketItem) {
@@ -39,14 +38,6 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
   }
 
   public BucketItemFragment() {
-  }
-
-  public void setCoverColor() {
-    if (bucketItem.isCompleted()) {
-      coverPhoto.setBackgroundColor(Color.LTGRAY);
-    } else {
-      coverPhoto.setBackgroundColor(bucketItem.getCoverColor());
-    }
   }
 
   public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +60,6 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
 
     TextView author = (TextView) view.findViewById(R.id.tv_bucket_author);
     final TextView title = (TextView) view.findViewById(R.id.tv_bucket_title);
-    coverPhoto = view.findViewById(R.id.iv_bucket_background);
     final TextView description = (TextView) view.findViewById(R.id.tv_bucket_description);
     TextView modified = (TextView) view.findViewById(R.id.tv_bucket_modified);
     TextView created = (TextView) view.findViewById(R.id.tv_bucket_created);
@@ -86,7 +76,6 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         bucketItem.setCompleted(isChecked);
-        setCoverColor();
         colorPicker.setEnabled(!isChecked);
       }
     });
@@ -97,9 +86,18 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
         bucketItem.setDescription(description.getText().toString());
         bucketItem.setTitle(title.getText().toString());
         bucketItem.setModified();
-        bucketItem.setCoverColor(ColorChanger.getChanger().getColor());
         bucketItem.setCompleted(completed.isChecked());
+        bucketItem.setCoverColor(ColorChanger.getChanger().getColor());
         mListener.update(bucketItem);
+        getActivity().getFragmentManager().popBackStack();
+      }
+    });
+
+    Button delete = (Button) view.findViewById(R.id.b_delete);
+    delete.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mListener.delete(bucketItem);
         getActivity().getFragmentManager().popBackStack();
       }
     });
@@ -110,8 +108,6 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
     created.setText(bucketItem.getPrettyCreated());
     description.setText(bucketItem.getDescription());
     completed.setChecked(bucketItem.isCompleted());
-
-    setCoverColor();
 
     return view;
   }
@@ -138,10 +134,8 @@ public class BucketItemFragment extends Fragment implements ColorChangeListener 
 
   @Override
   public void colorChanged(int color) {
-//    colorPicker.getThumb().mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-//    colorPicker.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+    colorPicker.getThumb().mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+    colorPicker.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
 
-    coverPhoto.setBackgroundColor(color);
   }
-
 }
